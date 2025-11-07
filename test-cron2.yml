@@ -1,0 +1,15 @@
+---
+- name: Remover jobs cron de teste
+  hosts: webservers
+  become: yes
+
+  tasks:
+    - name: Remover job de backup
+      cron:
+        name: "Backup diário da aplicação"
+        state: absent
+
+    - name: Remover job de limpeza
+      cron:
+        name: "Limpar logs antigos" 
+        state: absent

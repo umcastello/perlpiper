@@ -1,0 +1,28 @@
+---
+- name: Testar módulo file com novos caminhos
+  hosts: webservers
+  become: yes
+
+  tasks:
+
+    - name: Criar diretório de dados
+      file:
+        path: /opt/minha-app-dados
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Criar arquivo de log vazio
+      file:
+        path: /var/log/minha-app/app.log
+        state: file
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Criar diretório de cache
+      file:
+        path: /var/cache/minha-app
+        state: directory
+        mode: '0755'

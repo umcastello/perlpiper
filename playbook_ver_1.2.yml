@@ -1,0 +1,38 @@
+---
+- name: Configurar webserver
+  hosts: webservers
+  become: yes
+  vars:
+    admin: "Ulisses, o Flautista"
+
+  tasks:
+
+    - name: Renderizar MOTD com template
+      template:
+        src: templates/motd.j2
+        dest: /etc/motd
+        vars:
+          hostname: "{{ inventory_hostname }}"
+          admin: "{{ admin }}"
+          date: "{{ lookup('pipe', 'date +%Y-%m-%d') }}"
+
+    - name: Instalar nginx
+      package:
+        name: nginx
+        state: present
+
+    - name: Liberar porta 80 (mata quem estiver usando)
+      shell: fuser -k 80/tcp || true
+      become: yes
+
+    - name: Garantir que nginx está rodando
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+      ignore_errors: yes   # agora OK
+
+    - name: Copiar página inicial
+      copy:
+        content: "<h1>Bem-vindo ao perlpiper!</h1>"
+        dest: /var/www/html/index.html

@@ -1,0 +1,28 @@
+---
+- name: Testar módulo file
+  hosts: webservers
+  become: yes
+
+  tasks:
+
+    - name: Criar diretório de logs da aplicação
+      file:
+        path: /var/log/minha-app
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Criar arquivo de configuração vazio
+      file:
+        path: /etc/minha-app/config.conf
+        state: file
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Garantir que diretório temporário existe
+      file:
+        path: /tmp/meus-temporarios
+        state: directory
+        mode: '1777'

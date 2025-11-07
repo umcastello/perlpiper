@@ -1,0 +1,28 @@
+---
+- name: Testar módulo cron
+  hosts: webservers
+  become: yes
+
+  tasks:
+
+    - name: Agendar backup diário
+      cron:
+        name: "Backup diário da aplicação"
+        minute: "0"
+        hour: "2"
+        job: "/opt/scripts/backup.sh"
+        user: root
+
+    - name: Agendar limpeza de logs
+      cron:
+        name: "Limpar logs antigos"
+        minute: "30"
+        hour: "3"
+        weekday: "0"
+        job: "find /var/log -name '*.log.old' -delete"
+
+    - name: Agendar teste a cada 5 minutos
+      cron:
+        name: "Teste a cada 5 minutos"
+        minute: "*/5"
+        job: "echo 'Teste PerlPiper: $(date)' >> /tmp/perlpiper-test.log"

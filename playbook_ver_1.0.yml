@@ -1,0 +1,25 @@
+---
+- name: Configurar webserver
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Instalar nginx
+      package:
+        name: nginx
+        state: present
+
+    - name: Liberar porta 80 (mata quem estiver usando)
+      shell: fuser -k 80/tcp || true
+      become: yes
+
+    - name: Garantir que nginx está rodando
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+      ignore_errors: yes   # agora OK
+
+    - name: Copiar página inicial
+      copy:
+        content: "<h1>Bem-vindo ao perlpiper!</h1>"
+        dest: /var/www/html/index.html
